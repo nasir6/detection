@@ -6,6 +6,8 @@ __pycache__/
 # C extensions
 *.so
 
+# Data
+data/
 # Distribution / packaging
 .Python
 build/
@@ -114,4 +116,6 @@ data
 *.pkl
 *.pkl.json
 *.log.json
+*.pkl.bbox.json
 work_dirs/
+checkpoints/*

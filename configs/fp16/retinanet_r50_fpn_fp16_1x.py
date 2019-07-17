@@ -1,13 +1,13 @@
+# fp16 settings
+fp16 = dict(loss_scale=512.)
+
 # model settings
-data_directory = '/home/datasets/coco/'
 model = dict(
     type='RetinaNet',
-    pretrained='open-mmlab://resnext101_64x4d',
+    pretrained='modelzoo://resnet50',
     backbone=dict(
-        type='ResNeXt',
-        depth=101,
-        groups=64,
-        base_width=4,
+        type='ResNet',
+        depth=50,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
@@ -57,7 +57,7 @@ test_cfg = dict(
     max_per_img=100)
 # dataset settings
 dataset_type = 'CocoDataset'
-data_root = data_directory
+data_root = 'data/coco/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 data = dict(
@@ -121,11 +121,7 @@ total_epochs = 12
 device_ids = range(8)
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/retinanet_x101_64x4d_fpn_1x'
+work_dir = './work_dirs/retinanet_r50_fpn_fp16_1x'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
-
-# python tools/test.py configs/retinanet_x101_64x4d_fpn_1x.py \
-#     checkpoints/retinanet_x101_64x4d_fpn_1x_20181218-a0a22662.pth \
-#     --out results.pkl --eval bbox segm

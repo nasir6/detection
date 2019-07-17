@@ -1,0 +1,8 @@
+version: '3'
+services:
+  mmdetection:
+    image: mmdetection
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    command: nvidia-smi

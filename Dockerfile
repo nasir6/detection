@@ -1,0 +1,43 @@
+    FROM nvidia/cuda:9.0-devel
+    ADD . /home
+
+    # Declare some ENV
+    ENV NCCL_VERSION=2.4.2-1+cuda9.0
+
+    RUN apt-get update && apt-get install -y --allow-downgrades --allow-change-held-packages --no-install-recommends \
+        build-essential \
+        python3-pip \
+        python3-dev \
+        curl \
+        python3-setuptools \
+        libnccl2=${NCCL_VERSION} \
+        libnccl-dev=${NCCL_VERSION} \
+        git \
+        curl \
+        vim \
+        wget \
+        libsm6 \
+        libxrender1 \
+        libfontconfig1 \
+        bzip2 \
+        libopenblas-dev \
+        pbzip2 \
+        libgl1-mesa-glx && \
+        apt-get clean && \
+        rm -rf /var/lib/apt/lists/*
+
+    # INSTALLATION OF CONDA
+    ENV PATH /opt/conda/bin:$PATH
+    RUN curl -O https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh && \
+        /bin/bash Anaconda3-2019.03-Linux-x86_64.sh -b -p /opt/conda && \
+        rm Anaconda3-2019.03-Linux-x86_64.sh && \
+        /opt/conda/bin/conda clean -tipsy && \
+        ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+        echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+        echo "source activate base" >> ~/.bashrc
+
+    RUN conda install -y pytorch torchvision cudatoolkit=9.0 -c pytorch
+    RUN pip install Cython numpy scipy
+    RUN pip install mmcv
+    WORKDIR /home
+    RUN python setup.py develop
