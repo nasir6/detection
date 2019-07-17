@@ -70,7 +70,7 @@ docker run --runtime=nvidia --rm nvidia/cuda:9.0-devel nvidia-smi
 # If changes made to dockerfiles/Dockerfile.base file then re-build the base image otherwise build the library
 docker build -f dockerfiles/Dockerfile.base -t mmdetection:base .
 # Build  mmdetection library with latest tag
-docker build -f dockerfiles/Dockerfile -t mmdetection:latest .
+docker build -t mmdetection:latest .
 ```
 
 #### To run 
@@ -78,16 +78,25 @@ docker build -f dockerfiles/Dockerfile -t mmdetection:latest .
 ```sh
 
 # replace /home/ubuntu/code/ with path to the code directory
-docker run -v /home/ubuntu/code/:/home -it --runtime=nvidia --rm mmdetection:latest bash
+
+docker run -p 3000:3000 -v /home/ubuntu/code/:/home -it --runtime=nvidia --rm mmdetection:latest
 
 cd mmdetection
-
+python setup.py develop
 python tools/test.py configs/retinanet_x101_64x4d_fpn_1x.py \
     checkpoints/retinanet_x101_64x4d_fpn_1x_20181218-a0a22662.pth \
-    --out results.pkl --eval bbox segm
+    --out results.pkl --eval bbox
 
 ```
 
+### Run Jupyter notebook
+
+```ssh
+ssh -L 3000:localhost:3000 ubuntu@[server-ip]
+# run container bash and start jupyter notebook
+jupyter notebook --ip 0.0.0.0 --port 3000 --no-browser --allow-root
+
+```
 <!-- scp -r /media/nasir/Drive1/datasets/coco/annotations/ ubuntu@172.31.20.106:code/mmdetection/data/coco/ -->
 
 <!-- python ./tools/dist_train.sh configs/faster_rcnn_x101_64x4d_fpn_1x.py 8 --validate  -->

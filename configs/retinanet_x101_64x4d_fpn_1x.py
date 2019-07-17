@@ -1,5 +1,5 @@
 # model settings
-data_directory = '/home/datasets/coco/'
+data_directory = 'data/coco/'
 model = dict(
     type='RetinaNet',
     pretrained='open-mmlab://resnext101_64x4d',
