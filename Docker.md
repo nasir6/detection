@@ -67,10 +67,10 @@ docker run --runtime=nvidia --rm nvidia/cuda:9.0-devel nvidia-smi
 #### To Build Image 
 ```sh
 # build or pull image from dockerhub repo.
-# to build
-docker build -t mmdetection:latest .
-# to pull 
-docker pull nasir6/mmdetection:latest
+# If changes made to dockerfiles/Dockerfile.base file then re-build the base image otherwise build the library
+docker build -f dockerfiles/Dockerfile.base -t mmdetection:base .
+# Build  mmdetection library with latest tag
+docker build -f dockerfiles/Dockerfile -t mmdetection:latest .
 ```
 
 #### To run 

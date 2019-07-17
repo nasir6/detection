@@ -39,5 +39,3 @@
     RUN conda install -y pytorch torchvision cudatoolkit=9.0 -c pytorch
     RUN pip install Cython numpy scipy
     RUN pip install mmcv
-    WORKDIR /home
-    RUN python setup.py develop
