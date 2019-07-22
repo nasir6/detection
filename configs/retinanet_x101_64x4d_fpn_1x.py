@@ -1,5 +1,5 @@
 # model settings
-data_directory = 'data/coco/'
+data_directory = "data/SAR-Ship-Dataset/"
 model = dict(
     type='RetinaNet',
     pretrained='open-mmlab://resnext101_64x4d',
@@ -56,7 +56,7 @@ test_cfg = dict(
     nms=dict(type='nms', iou_thr=0.5),
     max_per_img=100)
 # dataset settings
-dataset_type = 'CocoDataset'
+dataset_type = 'SARDataset'
 data_root = data_directory
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -65,20 +65,20 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_train2017.json',
-        img_prefix=data_root + 'train2017/',
-        img_scale=(1333, 800),
+        ann_file=data_root + 'train_anno.npy',
+        img_prefix=data_root + '',
+        img_scale=(256, 256),
         img_norm_cfg=img_norm_cfg,
         size_divisor=32,
-        flip_ratio=0.5,
+        flip_ratio=0,
         with_mask=False,
         with_crowd=False,
         with_label=True),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
-        img_scale=(1333, 800),
+        ann_file=data_root + 'test_anno.npy',
+        img_prefix=data_root + '',
+        img_scale=(256, 256),
         img_norm_cfg=img_norm_cfg,
         size_divisor=32,
         flip_ratio=0,
@@ -87,9 +87,9 @@ data = dict(
         with_label=True),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
-        img_scale=(1333, 800),
+        ann_file=data_root + 'test_anno.npy',
+        img_prefix=data_root + '',
+        img_scale=(256, 256),
         img_norm_cfg=img_norm_cfg,
         size_divisor=32,
         flip_ratio=0,
@@ -98,7 +98,7 @@ data = dict(
         with_label=False,
         test_mode=True))
 # optimizer
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # learning policy
 lr_config = dict(

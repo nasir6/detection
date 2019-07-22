@@ -94,12 +94,12 @@ python tools/test.py configs/retinanet_x101_64x4d_fpn_1x.py \
 ```ssh
 ssh -L 3000:localhost:3000 ubuntu@[server-ip]
 # run container bash and start jupyter notebook
-jupyter notebook --ip 0.0.0.0 --port 3000 --no-browser --allow-root
+nohup jupyter notebook --ip 0.0.0.0 --port 3000 --no-browser --allow-root &
 
 ```
-<!-- scp -r /media/nasir/Drive1/datasets/coco/annotations/ ubuntu@172.31.20.106:code/mmdetection/data/coco/ -->
+<!-- scp -r /media/nasir/Drive1/datasets/SAR/SAR-Ship-Dataset/JPEGImages ubuntu@172.31.20.106:code/mmdetection/data/SAR-Ship-Dataset/JPEGImages -->
 
-<!-- python ./tools/dist_train.sh configs/faster_rcnn_x101_64x4d_fpn_1x.py 8 --validate  -->
+<!-- ./tools/dist_train.sh configs/retinanet_x101_64x4d_fpn_1x.py 8 --validate  -->
 
 For more details on Docker CE installation [docker-ce](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
