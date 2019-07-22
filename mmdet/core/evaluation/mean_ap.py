@@ -252,7 +252,6 @@ def eval_map(det_results,
                    if scale_ranges is not None else None)
     num_scales = len(scale_ranges) if scale_ranges is not None else 1
     eval_results = []
-    print(det_results[0])
     num_classes = len(det_results[0])  # positive class num
     gt_labels = [
         label if label.ndim == 1 else label[:, 0] for label in gt_labels
@@ -363,12 +362,10 @@ def print_map_summary(mean_ap, results, dataset=None):
 
     if not isinstance(mean_ap, list):
         mean_ap = [mean_ap]
-    print(mean_ap)
     header = ['class', 'gts', 'dets', 'recall', 'precision', 'ap']
     for i in range(num_scales):
         table_data = [header]
         for j in range(num_classes):
-            print(j, i, num_classes)
             row_data = [
                 label_names[j], num_gts[i, j], results[j]['num_dets'],
                 '{:.3f}'.format(recalls[i, j]), '{:.3f}'.format(
