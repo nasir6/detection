@@ -4,7 +4,8 @@ import re
 from collections import OrderedDict
 
 import torch
-from mmcv.runner import Runner, DistSamplerSeedHook, obj_from_dict
+from mmdet.apis import Runner2 as Runner
+from mmcv.runner import DistSamplerSeedHook, obj_from_dict
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 
 from mmdet import datasets
@@ -36,10 +37,10 @@ def parse_losses(losses):
     return loss, log_vars
 
 
-def batch_processor(model, data, train_mode):
+def batch_processor(model, data, train_mode, index, epoch):
     losses = model(**data)
     loss, log_vars = parse_losses(losses)
-
+    print(index, epoch)
     outputs = dict(
         loss=loss, log_vars=log_vars, num_samples=len(data['img'].data))
 

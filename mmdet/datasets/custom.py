@@ -40,6 +40,7 @@ class CustomDataset(Dataset):
     def __init__(self,
                  ann_file,
                  img_prefix,
+                 anno_file_postfix,
                  img_scale,
                  img_norm_cfg,
                  multiscale_mode='value',
@@ -58,6 +59,7 @@ class CustomDataset(Dataset):
                  test_mode=False):
         # prefix of images path
         self.img_prefix = img_prefix
+        self.anno_file_postfix = anno_file_postfix
 
         # load annotations (and proposals)
         self.img_infos = self.load_annotations(ann_file)
@@ -252,7 +254,8 @@ class CustomDataset(Dataset):
         data = dict(
             img=DC(to_tensor(img), stack=True),
             img_meta=DC(img_meta, cpu_only=True),
-            gt_bboxes=DC(to_tensor(gt_bboxes)))
+            gt_bboxes=DC(to_tensor(gt_bboxes)), 
+            index=idx)
         if self.proposals is not None:
             data['proposals'] = DC(to_tensor(proposals))
         if self.with_label:

@@ -113,7 +113,7 @@ def det2json(dataset, results):
                 data['image_id'] = img_id
                 data['bbox'] = xyxy2xywh(bboxes[i])
                 data['score'] = float(bboxes[i][4])
-                data['category_id'] = dataset.cat_ids[label]
+                data['category_id'] = label#dataset.cat_ids[label]
                 json_results.append(data)
     return json_results
 
@@ -132,7 +132,7 @@ def segm2json(dataset, results):
                 data['image_id'] = img_id
                 data['bbox'] = xyxy2xywh(bboxes[i])
                 data['score'] = float(bboxes[i][4])
-                data['category_id'] = dataset.cat_ids[label]
+                data['category_id'] = label#dataset.cat_ids[label]
                 bbox_json_results.append(data)
 
             # segm results
@@ -147,7 +147,7 @@ def segm2json(dataset, results):
                 data = dict()
                 data['image_id'] = img_id
                 data['score'] = float(mask_score[i])
-                data['category_id'] = dataset.cat_ids[label]
+                data['category_id'] = label#dataset.cat_ids[label]
                 segms[i]['counts'] = segms[i]['counts'].decode()
                 data['segmentation'] = segms[i]
                 segm_json_results.append(data)

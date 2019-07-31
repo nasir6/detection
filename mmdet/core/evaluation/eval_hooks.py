@@ -17,7 +17,7 @@ from mmdet import datasets
 
 class DistEvalHook(Hook):
 
-    def __init__(self, dataset, interval=1):
+    def __init__(self, dataset, interval=[2,4,8,16,20,21,22,23,24]):
         if isinstance(dataset, Dataset):
             self.dataset = dataset
         elif isinstance(dataset, dict):
@@ -28,6 +28,8 @@ class DistEvalHook(Hook):
                 'dataset must be a Dataset object or a dict, not {}'.format(
                     type(dataset)))
         self.interval = interval
+    def every_n_epochs(self, runner, n):
+        return (runner.epoch + 1) in n
 
     def after_train_epoch(self, runner):
         if not self.every_n_epochs(runner, self.interval):

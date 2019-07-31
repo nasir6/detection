@@ -28,6 +28,7 @@ class SSDHead(AnchorHead):
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.cls_out_channels = num_classes
+        self.pencil_loss_stage = 0
         num_anchors = [len(ratios) * 2 + 2 for ratios in anchor_ratios]
         reg_convs = []
         cls_convs = []
@@ -107,14 +108,10 @@ class SSDHead(AnchorHead):
             cls_scores.append(cls_conv(feat))
             bbox_preds.append(reg_conv(feat))
         return cls_scores, bbox_preds
-
-    def loss_single(self, cls_score, bbox_pred, labels, label_weights,
-                    bbox_targets, bbox_weights, num_total_samples, cfg):
-        loss_cls_all = F.cross_entropy(
-            cls_score, labels, reduction='none') * label_weights
+    
+    def loss_cls_mean(self, loss_cls_all, labels, num_total_samples, cfg):
         pos_inds = (labels > 0).nonzero().view(-1)
         neg_inds = (labels == 0).nonzero().view(-1)
-
         num_pos_samples = pos_inds.size(0)
         num_neg_samples = cfg.neg_pos_ratio * num_pos_samples
         if num_neg_samples > neg_inds.size(0):
@@ -123,6 +120,30 @@ class SSDHead(AnchorHead):
         loss_cls_pos = loss_cls_all[pos_inds].sum()
         loss_cls_neg = topk_loss_cls_neg.sum()
         loss_cls = (loss_cls_pos + loss_cls_neg) / num_total_samples
+        return loss_cls
+
+    def loss_single(self, cls_score, bbox_pred, labels, label_weights,
+                    bbox_targets, bbox_weights, num_total_samples, cfg):
+
+        if self.pencil_loss_stage == 0:
+            loss_cls_all = F.cross_entropy(
+                cls_score, labels, reduction='none') * label_weights
+            loss_cls = self.loss_cls_mean(loss_cls_all, labels, num_total_samples, cfg)
+        # elif self.pencil_loss_stage == 1:
+        
+        # else:
+
+        
+        # pos_inds = (labels > 0).nonzero().view(-1)
+        # neg_inds = (labels == 0).nonzero().view(-1)
+
+        # num_pos_samples = pos_inds.size(0)
+        # num_neg_samples = cfg.neg_pos_ratio * num_pos_samples
+        # if num_neg_samples > neg_inds.size(0):
+        #     num_neg_samples = neg_inds.size(0)
+        # topk_loss_cls_neg, _ = loss_cls_all[neg_inds].topk(num_neg_samples)
+        # loss_cls_pos = loss_cls_all[pos_inds].sum()
+        # loss_cls_neg = topk_loss_cls_neg.sum()
 
         loss_bbox = smooth_l1_loss(
             bbox_pred,

@@ -99,7 +99,9 @@ nohup jupyter notebook --ip 0.0.0.0 --port 3000 --no-browser --allow-root &
 ```
 <!-- scp -r /media/nasir/Drive1/datasets/SAR/SAR-Ship-Dataset/JPEGImages ubuntu@172.31.20.106:code/mmdetection/data/SAR-Ship-Dataset/JPEGImages -->
 
-<!-- ./tools/dist_train.sh configs/retinanet_x101_64x4d_fpn_1x.py 8 --validate  -->
+<!-- ./tools/dist_train.sh configs/pascal_voc/ssd300_voc.py 8 --validate  -->
+<!-- ./tools/dist_train.sh configs/pascal_voc/ssd300_voc.py 8 --validate --resume_from=work_dirs/ssd300_voc/epoch_24.pth  -->
+<!-- ./tools/dist_test.sh configs/pascal_voc/ssd300_voc.py work_dirs/ssd300_voc/epoch_24.pth 8 --out results.pkl -->
 
 For more details on Docker CE installation [docker-ce](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 

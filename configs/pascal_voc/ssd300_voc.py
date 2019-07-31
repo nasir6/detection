@@ -44,7 +44,7 @@ test_cfg = dict(
     max_per_img=200)
 # model training and testing settings
 # dataset settings
-dataset_type = 'VOCDataset'
+dataset_type = 'VOCTXTDataset'
 data_root = 'data/VOCdevkit/'
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[1, 1, 1], to_rgb=True)
 data = dict(
@@ -52,14 +52,14 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type='RepeatDataset',
-        times=10,
+        times=2,
         dataset=dict(
             type=dataset_type,
-            ann_file=[
-                data_root + 'VOC2007/ImageSets/Main/trainval.txt',
-                data_root + 'VOC2012/ImageSets/Main/trainval.txt'
-            ],
-            img_prefix=[data_root + 'VOC2007/', data_root + 'VOC2012/'],
+            ann_file= data_root + 'VOC2012/ImageSets/Main/train_set.txt',
+            img_prefix=f'{data_root}VOC2012/',
+            anno_file_postfix='',     
+            # anno_file_postfix='_psudo_labels',
+
             img_scale=(300, 300),
             img_norm_cfg=img_norm_cfg,
             size_divisor=None,
@@ -85,6 +85,8 @@ data = dict(
         type=dataset_type,
         ann_file=data_root + 'VOC2007/ImageSets/Main/test.txt',
         img_prefix=data_root + 'VOC2007/',
+        # anno_file_postfix='_psudo_labels',
+        anno_file_postfix='',
         img_scale=(300, 300),
         img_norm_cfg=img_norm_cfg,
         size_divisor=None,
@@ -95,8 +97,10 @@ data = dict(
         resize_keep_ratio=False),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'VOC2007/ImageSets/Main/test.txt',
-        img_prefix=data_root + 'VOC2007/',
+        ann_file=data_root + 'VOC2012/ImageSets/Main/train_unlabeled.txt',
+        img_prefix=data_root + 'VOC2012/',
+        # anno_file_postfix='_psudo_labels',
+        anno_file_postfix='',
         img_scale=(300, 300),
         img_norm_cfg=img_norm_cfg,
         size_divisor=None,
@@ -124,8 +128,11 @@ log_config = dict(
         # dict(type='TensorboardLoggerHook')
     ])
 # yapf:enable
+evaluation=dict(interval=[1, 2])
+
+# evaluation=dict(interval=[28, 34, 36, 38, 40, 42, 44, 45,46,47, 48])
 # runtime settings
-total_epochs = 24
+total_epochs = 2
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/ssd300_voc'
