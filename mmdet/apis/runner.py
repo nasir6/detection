@@ -1,6 +1,7 @@
 from mmcv.runner import Runner
 import logging
-
+import torch
+   
 class Runner2(Runner):
     def __init__(self,
                  model,
@@ -10,6 +11,8 @@ class Runner2(Runner):
                  log_level=logging.INFO,
                  logger=None):
         super(Runner2, self).__init__(model, batch_processor, optimizer, work_dir, log_level, logger)
+        self.pencil = PENCIL()
+
 
 
     def train(self, data_loader, **kwargs):
@@ -24,7 +27,7 @@ class Runner2(Runner):
             self._inner_iter = i
             self.call_hook('before_train_iter')
             outputs = self.batch_processor(
-                self.model, data_batch, train_mode=True, index=index, epoch=self._epoch, **kwargs)
+                self.model, data_batch, self, train_mode=True, index=index, **kwargs)
             if not isinstance(outputs, dict):
                 raise TypeError('batch_processor() must return a dict')
             if 'log_vars' in outputs:

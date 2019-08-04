@@ -28,7 +28,6 @@ class SSDHead(AnchorHead):
         self.num_classes = num_classes
         self.in_channels = in_channels
         self.cls_out_channels = num_classes
-        self.pencil_loss_stage = 0
         num_anchors = [len(ratios) * 2 + 2 for ratios in anchor_ratios]
         reg_convs = []
         cls_convs = []
@@ -107,9 +106,11 @@ class SSDHead(AnchorHead):
                                             self.cls_convs):
             cls_scores.append(cls_conv(feat))
             bbox_preds.append(reg_conv(feat))
+
         return cls_scores, bbox_preds
     
     def loss_cls_mean(self, loss_cls_all, labels, num_total_samples, cfg):
+
         pos_inds = (labels > 0).nonzero().view(-1)
         neg_inds = (labels == 0).nonzero().view(-1)
         num_pos_samples = pos_inds.size(0)
@@ -124,27 +125,10 @@ class SSDHead(AnchorHead):
 
     def loss_single(self, cls_score, bbox_pred, labels, label_weights,
                     bbox_targets, bbox_weights, num_total_samples, cfg):
+        loss_cls_all = F.cross_entropy(
+            cls_score, labels, reduction='none') * label_weights
 
-        if self.pencil_loss_stage == 0:
-            loss_cls_all = F.cross_entropy(
-                cls_score, labels, reduction='none') * label_weights
-            loss_cls = self.loss_cls_mean(loss_cls_all, labels, num_total_samples, cfg)
-        # elif self.pencil_loss_stage == 1:
-        
-        # else:
-
-        
-        # pos_inds = (labels > 0).nonzero().view(-1)
-        # neg_inds = (labels == 0).nonzero().view(-1)
-
-        # num_pos_samples = pos_inds.size(0)
-        # num_neg_samples = cfg.neg_pos_ratio * num_pos_samples
-        # if num_neg_samples > neg_inds.size(0):
-        #     num_neg_samples = neg_inds.size(0)
-        # topk_loss_cls_neg, _ = loss_cls_all[neg_inds].topk(num_neg_samples)
-        # loss_cls_pos = loss_cls_all[pos_inds].sum()
-        # loss_cls_neg = topk_loss_cls_neg.sum()
-
+        loss_cls = self.loss_cls_mean(loss_cls_all, labels, num_total_samples, cfg)
         loss_bbox = smooth_l1_loss(
             bbox_pred,
             bbox_targets,
@@ -163,6 +147,7 @@ class SSDHead(AnchorHead):
              gt_bboxes_ignore=None):
         featmap_sizes = [featmap.size()[-2:] for featmap in cls_scores]
         assert len(featmap_sizes) == len(self.anchor_generators)
+
 
         anchor_list, valid_flag_list = self.get_anchors(
             featmap_sizes, img_metas)
@@ -211,4 +196,5 @@ class SSDHead(AnchorHead):
             all_bbox_weights,
             num_total_samples=num_total_pos,
             cfg=cfg)
-        return dict(loss_cls=losses_cls, loss_bbox=losses_bbox)
+
+        return dict(loss_cls=losses_cls, loss_bbox=losses_bbox, pred_data=dict(gt_labels=all_labels, pred_scores = all_cls_scores))

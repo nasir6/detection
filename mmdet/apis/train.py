@@ -2,6 +2,7 @@ from __future__ import division
 
 import re
 from collections import OrderedDict
+import torch.nn as nn
 
 import torch
 from mmdet.apis import Runner2 as Runner
@@ -36,11 +37,13 @@ def parse_losses(losses):
 
     return loss, log_vars
 
-
-def batch_processor(model, data, train_mode, index, epoch):
+def batch_processor(model, data, runner, train_mode, index):
     losses = model(**data)
+
+    # pred_data = losses.pop('pred_data', None)
+
     loss, log_vars = parse_losses(losses)
-    print(index, epoch)
+
     outputs = dict(
         loss=loss, log_vars=log_vars, num_samples=len(data['img'].data))
 

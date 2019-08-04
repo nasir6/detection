@@ -31,6 +31,8 @@ class DistEvalHook(Hook):
     def every_n_epochs(self, runner, n):
         return (runner.epoch + 1) in n
 
+    # def update_y_labels(self):
+    #     self.data
     def after_train_epoch(self, runner):
         if not self.every_n_epochs(runner, self.interval):
             return

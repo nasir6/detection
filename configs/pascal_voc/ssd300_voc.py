@@ -57,8 +57,8 @@ data = dict(
             type=dataset_type,
             ann_file= data_root + 'VOC2012/ImageSets/Main/train_set.txt',
             img_prefix=f'{data_root}VOC2012/',
-            anno_file_postfix='',     
-            # anno_file_postfix='_psudo_labels',
+            # anno_file_postfix='',     
+            anno_file_postfix='_psudo_labels',
 
             img_scale=(300, 300),
             img_norm_cfg=img_norm_cfg,
@@ -128,11 +128,11 @@ log_config = dict(
         # dict(type='TensorboardLoggerHook')
     ])
 # yapf:enable
-evaluation=dict(interval=[1, 2])
+# evaluation=dict(interval=[ 2, 6, 10, 14, 16, 18, 20, 21, 22, 23, 24])
 
-# evaluation=dict(interval=[28, 34, 36, 38, 40, 42, 44, 45,46,47, 48])
+evaluation=dict(interval=[25,26,27,28, 34, 36, 38, 40, 42, 44, 45,46,47, 48])
 # runtime settings
-total_epochs = 2
+total_epochs = 48
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/ssd300_voc'
